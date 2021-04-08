@@ -3,6 +3,9 @@
 # Press Maiusc+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 from os import listdir
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 from os.path import isfile, join
 import csv
 from datetime import datetime
@@ -12,7 +15,7 @@ import pandas as pd
 '''
     obiettivi:
 
-    1) generare csv sha || family FATTO
+    1) generare csv sha || family || tempo FATTO
     2) diagramma a torta famiglie FATTO
     3) istogramma temporale FATTO
     4) boxplot categorie opcode FATTO
@@ -27,19 +30,19 @@ def countFamily():
         else:
             familycount[shafamilydict[x] ]=familycount[shafamilydict[x] ]+1
     for x in familycount.keys():
-        f.write(str(x + "=" + str(familycount[x])))
+        f.write(str(x) + "=" + str(familycount[x]))
         f.write("\n")
 
 
 def GeneraCSV():
     # generazione del csv
     with open('sha-family.csv', mode='a') as csv_file:
-        fieldnames = ['sha', 'family']
+        fieldnames = ['Sha', 'Family','Time']
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
 
         writer.writeheader()
         for x in shacfglist:
-            writer.writerow({'sha': str(x), 'family': str(shafamilydict[str(x)])})
+            writer.writerow({'Sha': str(x), 'Family': str(shafamilydict[str(x)]),"Time": str(shatimedict[str(x)])})
 
 
 def GeneraDate():
@@ -78,6 +81,7 @@ def GeneraDate():
 
 def generaFileBoxPlot():
     output = open("BOXPLOT.txt","a")
+    output.write("numero_totale"+","+"categorie\n")
 
     report = open("/home/kali/PycharmProjects/StatisticGenerator/MagicReportCOPY.txt","r")
     linee = report.readlines()
@@ -116,7 +120,91 @@ def generaFileBoxPlot():
 
         output.write(str(array[8].replace("]","").replace("\n","").replace(" ",""))+',"C9"')
         output.write("\n")
+    report = open("/home/kali/PycharmProjects/StatisticGenerator/Statistiche/MagicReportAntonella.txt", "r")
+    linee = report.readlines()
 
+    for l in linee:
+
+        array = list()
+
+        for i in l.split(","):
+            array.append(i)
+
+        output.write(str(array[0].replace("[", "")) + ',"C1"')
+        output.write("\n")
+
+        output.write(str(array[1].replace(" ", "")) + ',"C2"')
+        output.write("\n")
+
+        output.write(str(array[2].replace(" ", "")) + ',"C3"')
+        output.write("\n")
+
+        output.write(str(array[3].replace(" ", "")) + ',"C4"')
+        output.write("\n")
+
+        output.write(str(array[4].replace(" ", "")) + ',"C5"')
+        output.write("\n")
+
+        output.write(str(array[5].replace(" ", "")) + ',"C6"')
+        output.write("\n")
+
+        output.write(str(array[6].replace(" ", "")) + ',"C7"')
+        output.write("\n")
+
+        output.write(str(array[7].replace(" ", "")) + ',"C8"')
+        output.write("\n")
+
+        output.write(str(array[8].replace("]", "").replace("\n", "").replace(" ", "")) + ',"C9"')
+        output.write("\n")
+    report = open("/home/kali/PycharmProjects/StatisticGenerator/Statistiche/magicCarlo.txt", "r")
+    linee = report.readlines()
+
+    for l in linee:
+
+        array = list()
+
+        for i in l.split(","):
+            array.append(i)
+
+        output.write(str(array[0].replace("[", "")) + ',"C1"')
+        output.write("\n")
+
+        output.write(str(array[1].replace(" ", "")) + ',"C2"')
+        output.write("\n")
+
+        output.write(str(array[2].replace(" ", "")) + ',"C3"')
+        output.write("\n")
+
+        output.write(str(array[3].replace(" ", "")) + ',"C4"')
+        output.write("\n")
+
+        output.write(str(array[4].replace(" ", "")) + ',"C5"')
+        output.write("\n")
+
+        output.write(str(array[5].replace(" ", "")) + ',"C6"')
+        output.write("\n")
+
+        output.write(str(array[6].replace(" ", "")) + ',"C7"')
+        output.write("\n")
+
+        output.write(str(array[7].replace(" ", "")) + ',"C8"')
+        output.write("\n")
+
+        output.write(str(array[8].replace("]", "").replace("\n", "").replace(" ", "")) + ',"C9"')
+        output.write("\n")
+
+
+def generaBlox():
+    read_file = pd.read_csv(r'BOXPLOT.txt')
+    read_file.to_csv(r'BOXPLOT.csv', index=None)
+
+    sns.set_theme(style="whitegrid")
+    prova = pd.read_csv("BOXPLOT.csv", sep=",")
+    # ax = sns.boxplot(x=tips["total_bill"])
+    ax = sns.boxplot(x="categorie", y="numero_totale", data=prova, palette="Reds")
+    # ax = sns.boxplot(x=prova["categorie"], y=prova["numero_totale"])
+
+    plt.show()
 
 
 
@@ -186,26 +274,56 @@ Cvslist = [f for f in listdir(csvlocator) if isfile(join(csvlocator, f))]
 
 shacfglist = list()
 
-#f = open("shaCFG.txt", "a")
+f = open("shaCFG.txt", "a")
 
 
 for m in Cvslist:
 
     sha = m.split('.')[0]
     shacfglist.append(str(sha))
-    '''
+
     f.write(str(sha))
     f.write("\n")
-    '''
 
+print("per ora ho "+str(len(shacfglist)))
+
+
+a = open ("/home/kali/PycharmProjects/StatisticGenerator/Statistiche/ListHashAntonella.txt")
+
+
+for x in a.readlines():
+    shacfglist.append(x.replace("\n",""))
+    f.write(str(x.replace("\n","")))
+    f.write("\n")
+
+print("ora ho "+str(len(shacfglist)))
+
+c = open ("/home/kali/PycharmProjects/StatisticGenerator/Statistiche/hash_nameCarlo.txt")
+
+for y in c.readlines():
+    #shacfglist.append(y.replace("\n",""))
+    f.write(str(y.replace("\n", "")))
+    f.write("\n")
+
+print("NUM MALWARE TOTALE  "+str(len(shacfglist)))
+
+
+err = 0
+try:
+    countFamily()
+    GeneraCSV()
+    GeneraDate()
+
+    generaFileBoxPlot()
+    generaBlox()
+except Exception as e:
+    print(e)
+    err = err + 1
+
+print("errori totali = "+str(err))
 
 '''
 
-countFamily()
-GeneraCSV()
-GeneraDate()
-
-generaFileBoxPlot()
 
 '''
 
