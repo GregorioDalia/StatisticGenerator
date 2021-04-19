@@ -20,7 +20,60 @@ import pandas as pd
     3) istogramma temporale FATTO
     4) boxplot categorie opcode FATTO
 
+
+    5)
+    6)
+    
 '''
+def countFamilyTOTALE():
+    f = open("familyCountTOTALE.txt", "a")
+
+    for xcode in shacodefinale:
+        if shafamilydict[xcode] not in familycountTOTALE.keys():
+
+            familycountTOTALE[shafamilydict[xcode]]=1
+        else:
+            familycountTOTALE[shafamilydict[xcode] ]=familycountTOTALE[shafamilydict[xcode] ]+1
+    for x in familycountTOTALE.keys():
+        f.write(str(x) + "=" + str(familycountTOTALE[x]))
+        f.write("\n")
+
+
+def countTimeTOTALE():
+    mesi2020 = dict()
+    mesi2021 = dict()
+
+    for i in range(1, 13):
+        mesi2020[i] = 0
+        mesi2021[i] = 0
+
+    # date_time_obj = datetime.datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S.%f')
+
+    for x in shacodefinale:
+
+        datastring = shatimedict[x]
+
+        # print(datastring)
+
+        data = datetime.strptime(datastring, '%Y-%m-%d %H:%M:%S')
+
+        if data.year == 2020:
+            mesi2020[data.month] = mesi2020[data.month] + 1
+        elif data.year == 2021:
+            mesi2021[data.month] = mesi2021[data.month] + 1
+        else:
+            print("ERRORE " + str(data.year))
+    f = open("datacountTOTALE.txt", "a")
+
+    for x in mesi2020.keys():
+        f.write(str(x) + " : " + str(mesi2020[x]))
+        f.write("\n")
+    for y in mesi2021.keys():
+        f.write(str(y) + " : " + str(mesi2021[y]))
+        f.write("\n")
+    f.close()
+
+
 def countFamily():
     f = open("familyCount.txt", "a")
 
@@ -83,7 +136,7 @@ def generaFileBoxPlot():
     output = open("BOXPLOT.txt","a")
     output.write("numero_totale"+","+"categorie\n")
 
-    report = open("/home/kali/PycharmProjects/StatisticGenerator/MagicReportCOPY.txt","r")
+    report = open("/home/kali/PycharmProjects/StatisticGeneretor/MagicReportCOPY.txt","r")
     linee = report.readlines()
 
     for l in linee:
@@ -120,7 +173,8 @@ def generaFileBoxPlot():
 
         output.write(str(array[8].replace("]","").replace("\n","").replace(" ",""))+',"C9"')
         output.write("\n")
-    report = open("/home/kali/PycharmProjects/StatisticGenerator/Statistiche/MagicReportAntonella.txt", "r")
+    '''
+      report = open("/home/kali/PycharmProjects/StatisticGenerator/Statistiche/MagicReportAntonella.txt", "r")
     linee = report.readlines()
 
     for l in linee:
@@ -193,6 +247,9 @@ def generaFileBoxPlot():
         output.write(str(array[8].replace("]", "").replace("\n", "").replace(" ", "")) + ',"C9"')
         output.write("\n")
 
+    '''
+
+
 
 def generaBlox():
     read_file = pd.read_csv(r'BOXPLOT.txt')
@@ -211,18 +268,22 @@ def generaBlox():
 
 colnames = ['a','b','c','d','e','f','g','h','i','l','m','n','o','p' ]
 
-data = pd.read_csv('/home/kali/PycharmProjects/StatisticGenerator/full.csv',names=colnames)
+data = pd.read_csv('/home/kali/PycharmProjects/StatisticGeneretor/full.csv',names=colnames)
 
 #shalist = data.b.tolist()
 shacode = data.b.tolist()
 timescol = data.a.tolist()
 familycol = data.i.tolist()
 
+shacodefinale = list()
+
 shaposdict = dict()
 shafamilydict=dict()
 shatimedict = dict()
 
 familycount =dict() #chiave = famiglia, valore = amount
+
+familycountTOTALE =dict() #chiave = famiglia, valore = amount
 
 
 
@@ -243,6 +304,8 @@ for s in shacode:
 
     x = str(s).replace('"',"")
     x = x.replace(" ","")
+
+    shacodefinale.append(x)
     '''
     f.write(x)
     f.write("\n")
@@ -254,8 +317,6 @@ for s in shacode:
     shatimedict[x]=timescol[i]
 
     i = i+1
-
-
 
 #f.close()
 
@@ -287,6 +348,8 @@ for m in Cvslist:
 
 print("per ora ho "+str(len(shacfglist)))
 
+'''
+ora è tutto da un unica fonte 
 
 a = open ("/home/kali/PycharmProjects/StatisticGenerator/Statistiche/ListHashAntonella.txt")
 
@@ -306,26 +369,30 @@ for y in c.readlines():
     f.write("\n")
 
 print("NUM MALWARE TOTALE  "+str(len(shacfglist)))
-
+'''
 
 err = 0
+
+
+
 try:
+    countTimeTOTALE()
+    countFamilyTOTALE()
     countFamily()
     GeneraCSV()
     GeneraDate()
 
     generaFileBoxPlot()
     generaBlox()
+
+
 except Exception as e:
+    print("eccezione")
     print(e)
     err = err + 1
 
 print("errori totali = "+str(err))
 
-'''
-
-
-'''
 
 '''
 def getFamily(sha):
